@@ -13,3 +13,9 @@ cnpm install hexo
 hexo generae
 hexo server
 ```
+
+## publish
+
+```bash
+hexo deploy
+```
