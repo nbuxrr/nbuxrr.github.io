@@ -1,9 +1,9 @@
 ---
-title: 使用VSCode调试Electron项目
-categories: Electron
-tags: [Electron, VSCode]
-keywords: Electron
-description: Electron project debug
+title: 使用VSCode调试electron项目
+categories: electron
+tags: [electron, VSCode]
+keywords: electron
+description: electron project debug
 date: 2017-12-02
 ---
 
