@@ -1,4 +1,5 @@
 ---
+title: 关于
 date: 2019-12-01
 ---
 
@@ -8,4 +9,4 @@ date: 2019-12-01
 
 - nickname: nbuxrr
 - Email: nbuxrr@gmail.com
-- Github: https://github.com/nbuxrr
+- Github: [https://github.com/nbuxrr](https://github.com/nbuxrr)
