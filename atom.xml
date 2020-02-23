@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https:/blog.xrr.fun/"/>
-  <updated>2019-12-01T14:34:25.992Z</updated>
+  <updated>2020-02-23T08:25:58.901Z</updated>
   <id>https:/blog.xrr.fun/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Photoshop and Office for MacOS</title>
+    <link href="https:/blog.xrr.fun/2020/02/22/2020-02-22-Mac/"/>
+    <id>https:/blog.xrr.fun/2020/02/22/2020-02-22-Mac/</id>
+    <published>2020-02-21T16:00:00.000Z</published>
+    <updated>2020-02-23T08:25:58.901Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Photoshop-for-Mac"><a href="#Photoshop-for-Mac" class="headerlink" title="Photoshop for Mac"></a>Photoshop for Mac</h2><p>升级了mac系统到macOS Catalina（10.15.3）的版本时，出现了photoshop无法使用，说是新系统不再支持32位软件的问题，需要安装64位的photoshop。本以为下载新的软件重新安装就可以快速搞定，然鹅，下载的网站帖子和破解的方法虽然很多，但也一坑接一坑：</p><ul><li>下载网站需要注册收费或者解压密码需要付费；</li><li>下载网速受限，必须要吐嘈一下百度云的70KB/s；</li><li>下载了好几个版本的photoshop都安装失败，提示文件损坏，版本错误，使用官方的photoshop_installer或者creative_cloud_install在线安装器也出现安装一半的问题。</li></ul><p>最终解决办法：使用<code>Adobe_Photoshop_2020_21.0.3.91_ACR12.1_SP_20200122.dmg</code>安装包安装成功。该安装包应该是集成了破解补丁，查看注册信息后，应该是TNT的注册补丁。安装后未注册，则也可以使用TNT补丁工具打上补丁，具体操作步骤网上很多。</p><h2 id="office-for-Mac"><a href="#office-for-Mac" class="headerlink" title="office for Mac"></a>office for Mac</h2><p>升级系统后office虽然可以打开，但也变成未激活的状态了。主要也是选版本和激活的问题。</p><p>最终解决办法：使用<code>Microsoft_Office_16.34.20020900_Installer.pkg</code>安装包 + <code>Microsoft_Office_2019_VL_Serializer.pkg</code>注册器。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Photoshop-for-Mac&quot;&gt;&lt;a href=&quot;#Photoshop-for-Mac&quot; class=&quot;headerlink&quot; title=&quot;Photoshop for Mac&quot;&gt;&lt;/a&gt;Photoshop for Mac&lt;/h2&gt;&lt;p&gt;升级了mac系统到m
+      
+    
+    </summary>
+    
+      <category term="Mac" scheme="https:/blog.xrr.fun/categories/Mac/"/>
+    
+    
+      <category term="Photoshop" scheme="https:/blog.xrr.fun/tags/Photoshop/"/>
+    
+      <category term="Office" scheme="https:/blog.xrr.fun/tags/Office/"/>
+    
+      <category term="MacOS" scheme="https:/blog.xrr.fun/tags/MacOS/"/>
+    
+  </entry>
   
   <entry>
     <title>VPS上使用docker部署服务</title>
@@ -195,7 +224,7 @@
     <published>2017-12-01T16:00:00.000Z</published>
     <updated>2019-12-01T14:36:09.269Z</updated>
     
-    <content type="html"><![CDATA[<p>使用新版本的vscode调试各种语言的项目（包扩electron项目）的配置貌似便捷了很多，有点小惊喜。以electron的quick-start项目为例，小记一下，O(∩_∩)O哈哈~</p><h2 id="vscode版本"><a href="#vscode版本" class="headerlink" title="vscode版本"></a>vscode版本</h2><p><img src="http://pic.xrr.fun/blog/20171202/vscodeversion.png" alt="vscodeversion.png"></p><h2 id="项目代码"><a href="#项目代码" class="headerlink" title="项目代码"></a>项目代码</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 克隆示例项目的仓库</span><br><span class="line">git clone https://github.com/electron/electron-quick-start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 进入这个仓库</span><br><span class="line">cd electron-quick-start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 安装依赖</span><br><span class="line">npm install</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 运行</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure><p><img src="http://pic.xrr.fun/blog/20171202/project.png" alt="project.png"></p><h2 id="vscode调试配置"><a href="#vscode调试配置" class="headerlink" title="vscode调试配置"></a>vscode调试配置</h2><p>刚开始项目没有调试配置，需要先选择调试器环境，例如C++代码就可以选C++(GDB/LLDB)，这里electron运行的环境是nodejs，则选Node.js。</p><p><img src="http://pic.xrr.fun/blog/20171202/cfg1.png" alt="cfg1.png"></p><p>选择好调试环境后，在工程目录下会自动生成.vscode/launch.json文件。接着就是点“添加配置”按钮，使用提示下拉框方便的选择调试工程的类型，自动填充相应配置。</p><p><img src="http://pic.xrr.fun/blog/20171202/cfg2.png" alt="cfg2.png"><br><img src="http://pic.xrr.fun/blog/20171202/cfgfinish.png" alt="cfgfinish.png"></p><p>注：其中默认的legacy协议在实际运行调试时vscode报如下错误</p><p><img src="http://pic.xrr.fun/blog/20171202/err.png" alt="err.png"></p><p>根据提示将协议修改为inspector，就调试正常了。</p><h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>vscode调试的快捷键与号称宇宙第一IDE的visual studio一致</p><p><img src="http://pic.xrr.fun/blog/20171202/debug.png" alt="debug.png"></p>]]></content>
+    <content type="html"><![CDATA[<p>使用新版本的vscode调试各种语言的项目（包扩electron项目）的配置貌似便捷了很多，有点小惊喜。以electron的quick-start项目为例，小记一下，O(∩_∩)O哈哈~</p><h2 id="vscode版本"><a href="#vscode版本" class="headerlink" title="vscode版本"></a>vscode版本</h2><p><img src="http://pic.xrr.fun/blog/20171202/vscodeversion.png" alt="vscodeversion.png"></p><h2 id="项目代码"><a href="#项目代码" class="headerlink" title="项目代码"></a>项目代码</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 克隆示例项目的仓库</span></span><br><span class="line">git clone https://github.com/electron/electron-quick-start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入这个仓库</span></span><br><span class="line">cd electron-quick-start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装依赖</span></span><br><span class="line">npm install</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 运行</span></span><br><span class="line">npm start</span><br></pre></td></tr></table></figure><p><img src="http://pic.xrr.fun/blog/20171202/project.png" alt="project.png"></p><h2 id="vscode调试配置"><a href="#vscode调试配置" class="headerlink" title="vscode调试配置"></a>vscode调试配置</h2><p>刚开始项目没有调试配置，需要先选择调试器环境，例如C++代码就可以选C++(GDB/LLDB)，这里electron运行的环境是nodejs，则选Node.js。</p><p><img src="http://pic.xrr.fun/blog/20171202/cfg1.png" alt="cfg1.png"></p><p>选择好调试环境后，在工程目录下会自动生成.vscode/launch.json文件。接着就是点“添加配置”按钮，使用提示下拉框方便的选择调试工程的类型，自动填充相应配置。</p><p><img src="http://pic.xrr.fun/blog/20171202/cfg2.png" alt="cfg2.png"><br><img src="http://pic.xrr.fun/blog/20171202/cfgfinish.png" alt="cfgfinish.png"></p><p>注：其中默认的legacy协议在实际运行调试时vscode报如下错误</p><p><img src="http://pic.xrr.fun/blog/20171202/err.png" alt="err.png"></p><p>根据提示将协议修改为inspector，就调试正常了。</p><h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>vscode调试的快捷键与号称宇宙第一IDE的visual studio一致</p><p><img src="http://pic.xrr.fun/blog/20171202/debug.png" alt="debug.png"></p>]]></content>
     
     <summary type="html">
     
