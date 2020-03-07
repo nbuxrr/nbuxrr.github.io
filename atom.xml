@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https:/blog.xrr.fun/"/>
-  <updated>2020-02-23T08:25:58.901Z</updated>
+  <updated>2020-03-07T19:20:16.841Z</updated>
   <id>https:/blog.xrr.fun/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>强迫症就是不想要端口折腾记</title>
+    <link href="https:/blog.xrr.fun/2020/03/07/2020-03-07-nas/"/>
+    <id>https:/blog.xrr.fun/2020/03/07/2020-03-07-nas/</id>
+    <published>2020-03-06T16:00:00.000Z</published>
+    <updated>2020-03-07T19:20:16.841Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="换宽带引起的折腾"><a href="#换宽带引起的折腾" class="headerlink" title="换宽带引起的折腾"></a>换宽带引起的折腾</h2><p>搬新之后，新小区拉不了移动宽带，肉疼的拉了个300M的电信。想到电信宽带是有公网IP的，再想到原先用vultr的VPS+frp内网穿透代理方式的访问速度太感人，就想要直接使用公网IP访问nas的方式代替之。</p><p>简单配置光猫和路由器上的端口映射后，实测对nas的外网访问速度，在线看视频、上下传文件、远程桌面虚拟机再也不卡了👍。直接使用IP+端口号方式访问，虽然配置很简单，但是在浏览器里输入IP和端口号，强迫症是忍不了的，况且买了三五年的域名也不能浪费呀。那么问题来了，怎么折腾能直接用二级域名访问到我nas上的应用服务呢？</p><p>捋了一下手上现有的资源清单</p><table><thead><tr><th></th><th></th><th></th></tr></thead><tbody><tr><td>VPS</td><td>vultr上租的虚拟主机，含有公网IP + 80和443端口</td><td></td></tr><tr><td>xrr.fun</td><td>阿里云上租的域名</td><td></td></tr><tr><td>xurr.work</td><td>阿里云上租的域名</td><td></td></tr><tr><td>电信宽带</td><td>含有公网IP是动态分配的，在光猫的WLAN上，光猫可配置端口映射，但80和443端口被封</td><td></td></tr><tr><td>华硕路由器</td><td>路由器的WLAN口接在光猫的LAN口上</td><td></td></tr><tr><td>群晖NAS</td><td>白群晖，很多功能有待开发，通过有线接在路由器的LAN口上</td></tr></tbody></table><h2 id="电信宽带的IP默认是动态的"><a href="#电信宽带的IP默认是动态的" class="headerlink" title="电信宽带的IP默认是动态的"></a>电信宽带的IP默认是动态的</h2><p>原先VPS的IP是固定的，在阿里云上做域名解析的时候，直接使用A记录的方式解析到这个IP就可以了。电信宽带的IP默认是动态分配的，可以打客服电话申请改为固定IP。但是使用固定IP不是我想要的，有些网站下载或其他其他操作的限制是根据公网上的IP来的，如果IP被限制了，只要重启下光猫分配我一个新IP就可以绕过限制，所以觉得还是得保留动态IP。</p><p>用动态IP就要做DDNS才方便，不然每次IP一变，就去阿里云改域名的A记录值，也是要逼shi懒人的节奏（网上搜索说阿里云提供了DDNS的SDK，但复杂啰嗦的配置也不是我想要的）。</p><p>群晖提供了动态域名解析的功能，配置路径在<code>控制面板-&gt;外部访问-&gt;DDNS</code>，一堆的DDNS服务商里选择了Synology，毕竟nas是他亲儿子，配置后，电信宽带动态IP就和设置的二级域名绑定了。然后在阿里云上配置购买的域名指向这个DDNS的二级域名，虽然这种域名解析转了两次，但是配置简单省钱😀。</p><h2 id="电信宽带的80和443端口被封了"><a href="#电信宽带的80和443端口被封了" class="headerlink" title="电信宽带的80和443端口被封了"></a>电信宽带的80和443端口被封了</h2><p>一开始的时候443端口没有被封，通过群晖的<code>控制面板-&gt;应用程序门户-&gt;反向代理服务器</code>，可以直接通过例如<code>https://book.xrr.fun</code>访问到我的书单。然鹅，没过两天，443端口也被封了。在浏览器地址栏里输入<code>https://book.xrr.fun:4000</code>的方式，实在没法忍，只能想其他办法了。</p><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>阿里云DNS解析中有显式转发和隐式转发两种方式可以设置，但是要求目标服务器做备案。简便的一种方法是购买阿里云的虚拟主机可以得到备案服务号，但是要新买一个vps，比较费钱，pass。</p><h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>利用301、302跳转，配置点如下，</p><ul><li>在阿里云DNS配置<code>book.xrr.fun</code>指向vps的固定IP；</li><li>在阿里云DNS配置<code>book.xurr.work</code>指向nas配置DDNS的二级域名；</li><li>可选步骤：在nas上配置反向代理，将http的应用转到https及4000端口上；</li><li><p>vps上docker部署<code>nginx</code>，配置nginx将<code>book.xrr.fun</code>的访问转到<code>https://book.xurr.work:4000</code>。虽然跳转后浏览器地址栏显示的是<code>https://book.xurr.work:4000</code>，但是打开浏览器时只要输入<code>book.xrr.fun</code>就可以访问，还是很拯救强迫症的。第一次跳转可能需要花费几秒钟，之后访问就比较省时间了。</p><p>  修改nginx配置参考，打开默认配置文件/etc/nginx/default.conf，增加如下if配置段，</p>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    if ($host = &apos;book.xrr.fun&apos; ) &#123;</span><br><span class="line">        return https://book.xurr.work:4000;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>因为使用了https，所以还需要一个ssl证书。nas虽然提供了<code>Let’s Encrypt</code>的免费证书申请，但是浏览器中对这个证书还是会报不安全。阿里云提供了免费个人版的<code>赛门铁克（Symantec)</code>ssl证书购买，每个证书可以和一个一级或二级域名绑定，将证书下载后配置到nas中，浏览器中终于显示小绿锁，满满的安全。</p></li></ul><p>跳转示例：<a href="http://book.xrr.fun" target="_blank" rel="noopener">http://book.xrr.fun</a></p><h2 id="假装做个总结"><a href="#假装做个总结" class="headerlink" title="假装做个总结"></a>假装做个总结</h2><p>换工作+新冠疫情的影响，过了毕业工作以来的最长的一个假期——2个月+，得重新折腾起来哇，折腾自己，人生就怕没有追求，将来需要的事，现在必须要着手准备。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;换宽带引起的折腾&quot;&gt;&lt;a href=&quot;#换宽带引起的折腾&quot; class=&quot;headerlink&quot; title=&quot;换宽带引起的折腾&quot;&gt;&lt;/a&gt;换宽带引起的折腾&lt;/h2&gt;&lt;p&gt;搬新之后，新小区拉不了移动宽带，肉疼的拉了个300M的电信。想到电信宽带是有公网IP的，再想
+      
+    
+    </summary>
+    
+      <category term="NAT" scheme="https:/blog.xrr.fun/categories/NAT/"/>
+    
+    
+      <category term="Nginx" scheme="https:/blog.xrr.fun/tags/Nginx/"/>
+    
+      <category term="HTTP" scheme="https:/blog.xrr.fun/tags/HTTP/"/>
+    
+      <category term="DNS" scheme="https:/blog.xrr.fun/tags/DNS/"/>
+    
+      <category term="DDNS" scheme="https:/blog.xrr.fun/tags/DDNS/"/>
+    
+  </entry>
   
   <entry>
     <title>Photoshop and Office for MacOS</title>

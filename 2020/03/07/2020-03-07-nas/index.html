@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>强迫症就是不想要端口折腾记 | blog.xrr.fun</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/8.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">强迫症就是不想要端口折腾记</h1><a id="logo" href="/.">blog.xrr.fun</a><p class="description">假装记了个笔记</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">强迫症就是不想要端口折腾记</h1><div class="post-meta">Mar 7, 2020<span> | </span><span class="category"><a href="/categories/NAT/">NAT</a></span></div><div class="post-content"><h2 id="换宽带引起的折腾"><a href="#换宽带引起的折腾" class="headerlink" title="换宽带引起的折腾"></a>换宽带引起的折腾</h2><p>搬新之后，新小区拉不了移动宽带，肉疼的拉了个300M的电信。想到电信宽带是有公网IP的，再想到原先用vultr的VPS+frp内网穿透代理方式的访问速度太感人，就想要直接使用公网IP访问nas的方式代替之。</p>
+<p>简单配置光猫和路由器上的端口映射后，实测对nas的外网访问速度，在线看视频、上下传文件、远程桌面虚拟机再也不卡了👍。直接使用IP+端口号方式访问，虽然配置很简单，但是在浏览器里输入IP和端口号，强迫症是忍不了的，况且买了三五年的域名也不能浪费呀。那么问题来了，怎么折腾能直接用二级域名访问到我nas上的应用服务呢？</p>
+<p>捋了一下手上现有的资源清单</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VPS</td>
+<td>vultr上租的虚拟主机，含有公网IP + 80和443端口</td>
+<td></td>
+</tr>
+<tr>
+<td>xrr.fun</td>
+<td>阿里云上租的域名</td>
+<td></td>
+</tr>
+<tr>
+<td>xurr.work</td>
+<td>阿里云上租的域名</td>
+<td></td>
+</tr>
+<tr>
+<td>电信宽带</td>
+<td>含有公网IP是动态分配的，在光猫的WLAN上，光猫可配置端口映射，但80和443端口被封</td>
+<td></td>
+</tr>
+<tr>
+<td>华硕路由器</td>
+<td>路由器的WLAN口接在光猫的LAN口上</td>
+<td></td>
+</tr>
+<tr>
+<td>群晖NAS</td>
+<td>白群晖，很多功能有待开发，通过有线接在路由器的LAN口上</td>
+</tr>
+</tbody>
+</table>
+<h2 id="电信宽带的IP默认是动态的"><a href="#电信宽带的IP默认是动态的" class="headerlink" title="电信宽带的IP默认是动态的"></a>电信宽带的IP默认是动态的</h2><p>原先VPS的IP是固定的，在阿里云上做域名解析的时候，直接使用A记录的方式解析到这个IP就可以了。电信宽带的IP默认是动态分配的，可以打客服电话申请改为固定IP。但是使用固定IP不是我想要的，有些网站下载或其他其他操作的限制是根据公网上的IP来的，如果IP被限制了，只要重启下光猫分配我一个新IP就可以绕过限制，所以觉得还是得保留动态IP。</p>
+<p>用动态IP就要做DDNS才方便，不然每次IP一变，就去阿里云改域名的A记录值，也是要逼shi懒人的节奏（网上搜索说阿里云提供了DDNS的SDK，但复杂啰嗦的配置也不是我想要的）。</p>
+<p>群晖提供了动态域名解析的功能，配置路径在<code>控制面板-&gt;外部访问-&gt;DDNS</code>，一堆的DDNS服务商里选择了Synology，毕竟nas是他亲儿子，配置后，电信宽带动态IP就和设置的二级域名绑定了。然后在阿里云上配置购买的域名指向这个DDNS的二级域名，虽然这种域名解析转了两次，但是配置简单省钱😀。</p>
+<h2 id="电信宽带的80和443端口被封了"><a href="#电信宽带的80和443端口被封了" class="headerlink" title="电信宽带的80和443端口被封了"></a>电信宽带的80和443端口被封了</h2><p>一开始的时候443端口没有被封，通过群晖的<code>控制面板-&gt;应用程序门户-&gt;反向代理服务器</code>，可以直接通过例如<code>https://book.xrr.fun</code>访问到我的书单。然鹅，没过两天，443端口也被封了。在浏览器地址栏里输入<code>https://book.xrr.fun:4000</code>的方式，实在没法忍，只能想其他办法了。</p>
+<h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>阿里云DNS解析中有显式转发和隐式转发两种方式可以设置，但是要求目标服务器做备案。简便的一种方法是购买阿里云的虚拟主机可以得到备案服务号，但是要新买一个vps，比较费钱，pass。</p>
+<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>利用301、302跳转，配置点如下，</p>
+<ul>
+<li>在阿里云DNS配置<code>book.xrr.fun</code>指向vps的固定IP；</li>
+<li>在阿里云DNS配置<code>book.xurr.work</code>指向nas配置DDNS的二级域名；</li>
+<li>可选步骤：在nas上配置反向代理，将http的应用转到https及4000端口上；</li>
+<li><p>vps上docker部署<code>nginx</code>，配置nginx将<code>book.xrr.fun</code>的访问转到<code>https://book.xurr.work:4000</code>。虽然跳转后浏览器地址栏显示的是<code>https://book.xurr.work:4000</code>，但是打开浏览器时只要输入<code>book.xrr.fun</code>就可以访问，还是很拯救强迫症的。第一次跳转可能需要花费几秒钟，之后访问就比较省时间了。</p>
+<p>  修改nginx配置参考，打开默认配置文件/etc/nginx/default.conf，增加如下if配置段，</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    if ($host = &apos;book.xrr.fun&apos; ) &#123;</span><br><span class="line">        return https://book.xurr.work:4000;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>因为使用了https，所以还需要一个ssl证书。nas虽然提供了<code>Let’s Encrypt</code>的免费证书申请，但是浏览器中对这个证书还是会报不安全。阿里云提供了免费个人版的<code>赛门铁克（Symantec)</code>ssl证书购买，每个证书可以和一个一级或二级域名绑定，将证书下载后配置到nas中，浏览器中终于显示小绿锁，满满的安全。</p>
+</li>
+</ul>
+<p>跳转示例：<a href="http://book.xrr.fun" target="_blank" rel="noopener">http://book.xrr.fun</a></p>
+<h2 id="假装做个总结"><a href="#假装做个总结" class="headerlink" title="假装做个总结"></a>假装做个总结</h2><p>换工作+新冠疫情的影响，过了毕业工作以来的最长的一个假期——2个月+，得重新折腾起来哇，折腾自己，人生就怕没有追求，将来需要的事，现在必须要着手准备。</p>
+</div><div class="tags"><a href="/tags/Nginx/">Nginx</a><a href="/tags/HTTP/">HTTP</a><a href="/tags/DNS/">DNS</a><a href="/tags/DDNS/">DDNS</a></div><div class="post-nav"><a class="next" href="/2020/02/22/2020-02-22-Mac/">Photoshop and Office for MacOS</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https:/blog.xrr.fun"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Lua/">Lua</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NAT/">NAT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPN/">VPN</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPS/">VPS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/electron/">electron</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/VPN/" style="font-size: 15px;">VPN</a> <a href="/tags/PPTP/" style="font-size: 15px;">PPTP</a> <a href="/tags/IPSec/" style="font-size: 15px;">IPSec</a> <a href="/tags/electron/" style="font-size: 15px;">electron</a> <a href="/tags/VSCode/" style="font-size: 15px;">VSCode</a> <a href="/tags/Lua/" style="font-size: 15px;">Lua</a> <a href="/tags/CPP/" style="font-size: 15px;">CPP</a> <a href="/tags/内网穿透/" style="font-size: 15px;">内网穿透</a> <a href="/tags/frp/" style="font-size: 15px;">frp</a> <a href="/tags/VPS/" style="font-size: 15px;">VPS</a> <a href="/tags/NAT/" style="font-size: 15px;">NAT</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Photoshop/" style="font-size: 15px;">Photoshop</a> <a href="/tags/Office/" style="font-size: 15px;">Office</a> <a href="/tags/MacOS/" style="font-size: 15px;">MacOS</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/HTTP/" style="font-size: 15px;">HTTP</a> <a href="/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/tags/DDNS/" style="font-size: 15px;">DDNS</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/03/07/2020-03-07-nas/">强迫症就是不想要端口折腾记</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/22/2020-02-22-Mac/">Photoshop and Office for MacOS</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/01/2019-12-01-vps/">VPS上使用docker部署服务</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/26/2018-07-26-IPSec2/">搭建VPN服务之IPSec(二)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/19/2018-03-19-frp/">内网穿透之frps与frpc</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/2018-03-18-IPSec/">搭建VPN服务之IPSec</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/2018-03-17-PPTP/">搭建VPN服务之PPTP</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/01/2018-01-01-hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/02/2017-12-02-electron-vscodedebugcfg/">使用VSCode调试electron项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/05/21/2016-05-21-Lua/">Lua & C++</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">blog.xrr.fun.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.2.5/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.2.5/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
